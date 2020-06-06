@@ -6,12 +6,20 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: ubuntu:18.04
-          - image: debian:buster
-          - image: balenalib/generic-armv7ahf:buster-build
+          - name: bionic-amd64
+            image: ubuntu:18.04
+          - name: buster-amd64
+            image: debian:buster
+          - name: buster-armv7
+            image: balenalib/generic-armv7ahf:buster-build
+      fail-fast: false
     name: ${{ matrix.image }}
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - run: bash build.sh ${{ matrix.image }}
-      - run: openssl sha256 $HOME/output/*
+      - run: tar cJf deb.txz -C $HOME/output .
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.name }}
+          path: deb.txz
