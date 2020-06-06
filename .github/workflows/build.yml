@@ -1,0 +1,17 @@
+name: build
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - image: ubuntu:18.04
+          - image: debian:buster
+          - image: balenalib/generic-armv7ahf:buster-build
+    name: ${{ matrix.image }}
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash build.sh ${{ matrix.image }}
+      - run: openssl sha256 $HOME/output/*
