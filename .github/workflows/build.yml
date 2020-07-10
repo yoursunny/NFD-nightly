@@ -13,12 +13,12 @@ jobs:
           - name: buster-armv7
             image: balenalib/generic-armv7ahf:buster-build
       fail-fast: false
-    name: ${{ matrix.image }}
+    name: ${{ matrix.name }}
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - run: bash build.sh ${{ matrix.image }}
-      - run: tar cJf deb.txz -C $HOME/output .
+      - run: bash build.sh ${{ matrix.name }} ${{ matrix.image }}
+      - run: tar cJf deb.txz -C output-${{ matrix.name }} .
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.name }}
