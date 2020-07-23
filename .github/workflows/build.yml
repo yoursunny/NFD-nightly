@@ -2,24 +2,46 @@ name: build
 on: [push]
 
 jobs:
-  build:
+  ndn-cxx:
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        include:
-          - name: bionic-amd64
-            image: ubuntu:18.04
-          - name: buster-amd64
-            image: debian:buster
-          - name: buster-armv7
-            image: balenalib/generic-armv7ahf:buster-build
+        target:
+          - bionic-amd64
+          - buster-amd64
+          - buster-armv7
+          - buster-armv6
       fail-fast: false
-    name: ${{ matrix.name }}
-    runs-on: ubuntu-18.04
+    name: ndn-cxx ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v2
-      - run: bash build.sh ${{ matrix.name }} ${{ matrix.image }}
-      - run: tar cJf deb.txz -C output-${{ matrix.name }} .
+      - run: bash build.sh ndn-cxx ${{ matrix.target }}
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.name }}
-          path: deb.txz
+          name: ndn-cxx ${{ matrix.target }}
+          path: output.txz
+  proj:
+    runs-on: ubuntu-18.04
+    needs: ndn-cxx
+    strategy:
+      matrix:
+        proj:
+          - nfd
+          - ndn-tools
+        target:
+          - bionic-amd64
+          - buster-amd64
+          - buster-armv7
+          - buster-armv6
+      fail-fast: false
+    name: ${{ matrix.proj }} ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: ndn-cxx ${{ matrix.target }}
+      - run: bash build.sh ${{ matrix.proj }} ${{ matrix.target }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.proj }} ${{ matrix.target }}
+          path: output.txz
