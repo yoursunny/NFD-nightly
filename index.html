@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>NFD nightly packages</title>
+<base target="_blank">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/purecss@2.0.3,npm/purecss@2.0.3/build/grids-responsive-min.min.css">
 <style>
@@ -14,9 +15,8 @@ footer { position:absolute; right:0; bottom:0; left:0; padding:1rem 3rem 1rem 3r
 <section>
 <h1>NFD nightly packages</h1>
 <p>
-This page provides automated builds of <a href="https://named-data.net/doc/NFD/current/" target="_blank">NDN Forwarding Daemon (NFD)</a> and related software.
-You must be logged into GitHub to download.
-<a href="https://yoursunny.com/t/2020/NFD-nightly/"></a>
+This page provides automated builds of <a href="https://named-data.net/doc/NFD/current/">NDN Forwarding Daemon (NFD)</a> and related software.
+See <a href="https://yoursunny.com/t/2020/NFD-nightly/">instructions and FAQ</a>.
 </p>
 
 <table class="pure-table pure-table-horizontal">
@@ -44,7 +44,6 @@ function td(text, href) {
   if (href) {
     const $a = document.createElement("a");
     $a.href = href;
-    $a.target = "_blank";
     $a.textContent = text;
     $td.append($a);
   } else {
