@@ -11,15 +11,15 @@ jobs:
   prepare-matrix:
     runs-on: ubuntu-18.04
     outputs:
-      proj: ${{ steps.set-proj.outputs.proj }}
-      target: ${{ steps.set-target.outputs.target }}
+      proj: ${{ steps.set.outputs.proj }}
+      target: ${{ steps.set.outputs.target }}
     steps:
-      - id: set-proj
+      - uses: actions/checkout@v2
+      - id: set
+        name: set variables
         run: |
-          echo '::set-output name=proj::["nfd","ndn-tools"]'
-      - id: set-target
-        run: |
-          echo '::set-output name=target::["bionic-amd64","buster-amd64"]'
+          echo '::set-output name=proj::'$(jq -c '.proj | with_entries(select(.value.in_matrix)) | keys' matrix.json)
+          echo '::set-output name=target::'$(jq -c '.target | with_entries(select(.value.skip | not)) | keys' matrix.json)
   ndn-cxx:
     needs: [prepare-matrix]
     runs-on: ubuntu-18.04
@@ -58,3 +58,8 @@ jobs:
         with:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
+  publish:
+    runs-on: ubuntu-18.04
+    needs: [proj]
+    steps:
+      - run: true

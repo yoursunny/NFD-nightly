@@ -1,0 +1,46 @@
+{
+  "proj": {
+    "ndn-cxx": {
+      "in_matrix": false,
+      "repo": "https://github.com/named-data/ndn-cxx.git"
+    },
+    "libpsync": {
+      "in_matrix": true,
+      "repo": "https://github.com/named-data/PSync.git"
+    },
+    "name-based-access-control": {
+      "in_matrix": true,
+      "repo": "https://github.com/named-data/name-based-access-control.git"
+    },
+    "nfd": {
+      "in_matrix": true,
+      "repo": "https://github.com/named-data/NFD.git"
+    },
+    "ndn-tools": {
+      "in_matrix": true,
+      "repo": "https://github.com/named-data/ndn-tools.git"
+    }
+  },
+  "target": {
+    "bionic-amd64": {
+      "skip": false,
+      "base": "ubuntu:18.04"
+    },
+    "focal-amd64": {
+      "skip": false,
+      "base": "ubuntu:20.04"
+    },
+    "buster-amd64": {
+      "skip": false,
+      "base": "debian:buster"
+    },
+    "buster-armv7": {
+      "skip": false,
+      "base": "balenalib/generic-armv7ahf:buster-build"
+    },
+    "buster-armv6": {
+      "skip": false,
+      "base": "balenalib/raspberry-pi:buster-build"
+    }
+  }
+}

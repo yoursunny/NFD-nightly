@@ -3,12 +3,8 @@ set -eo pipefail
 PROJ=$1
 TARGET=$2
 
-case $TARGET in
-  bionic-amd64) BASEIMG=ubuntu:18.04 ;;
-  buster-amd64) BASEIMG=debian:buster ;;
-  buster-armv7) BASEIMG=balenalib/generic-armv7ahf:buster-build ;;
-  buster-armv6) BASEIMG=balenalib/raspberry-pi:buster-build ;;
-esac
+BASEIMG=$(jq -r '.target | to_entries[] | select(.key == "'$TARGET'") | .value.base' matrix.json)
+REPO=$(jq -r '.proj | to_entries[] | select(.key == "'$PROJ'") | .value.repo' matrix.json)
 
 (
   echo 'FROM '$BASEIMG
@@ -19,7 +15,7 @@ esac
     echo 'COPY deps /deps'
   fi
   echo 'COPY compile.sh /'
-  echo 'RUN /bin/bash /compile.sh '$PROJ
+  echo 'RUN /bin/bash /compile.sh '$PROJ $REPO
 ) > Dockerfile
 
 docker build -t nfd-nightly-build .

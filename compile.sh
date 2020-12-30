@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 PROJ=$1
+REPO=$2
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
@@ -11,17 +12,7 @@ mkdir -p /source
 
 cd /source
 git clone --recursive --depth=1 https://github.com/named-data/ppa-packaging.git
-case $PROJ in
-  ndn-cxx)
-    git clone --recursive --depth=1 https://github.com/named-data/ndn-cxx.git
-    ;;
-  nfd)
-    git clone --recursive --depth=1 https://github.com/named-data/NFD.git nfd
-    ;;
-  ndn-tools)
-    git clone --recursive --depth=1 https://github.com/named-data/ndn-tools.git
-    ;;
-esac
+git clone --recursive $REPO $PROJ # `./waf version` needs full clone
 
 if [[ -d /deps ]]; then
   cd /deps
