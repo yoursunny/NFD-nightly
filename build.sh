@@ -1,6 +1,5 @@
 #!/bin/bash
-set -e
-set -o pipefail
+set -eo pipefail
 PROJ=$1
 TARGET=$2
 
@@ -16,9 +15,8 @@ esac
   if [[ $BASEIMG == balenalib* ]]; then
     echo 'RUN ["cross-build-start"]'
   fi
-  if [[ -f output.txz ]]; then
-    mv output.txz deps.txz
-    echo 'COPY deps.txz /'
+  if [[ -d deps ]]; then
+    echo 'COPY deps /deps'
   fi
   echo 'COPY compile.sh /'
   echo 'RUN /bin/bash /compile.sh '$PROJ
@@ -27,5 +25,5 @@ esac
 docker build -t nfd-nightly-build .
 
 CTID=$(docker container create nfd-nightly-build)
-docker cp $CTID:/output.txz ./
+docker cp $CTID:/source ./output
 docker container stop $CTID
