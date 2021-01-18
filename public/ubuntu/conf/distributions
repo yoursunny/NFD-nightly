@@ -1,0 +1,7 @@
+Codename: bionic
+Architectures: amd64
+Components: main
+
+Codename: focal
+Architectures: amd64
+Components: main

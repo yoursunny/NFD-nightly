@@ -1,0 +1,5 @@
+/.env
+/dl
+/public/*/db
+/public/*/dists
+/public/*/pool
