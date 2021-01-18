@@ -1,7 +1,7 @@
 https://nfd-nightly-apt.ndn.today {
-  listen 45.142.157.169 2604:9cc0:0:15ec::80
+  bind 45.142.157.169 2604:9cc0:0:15ec::80
 
-  root * /home/web/nfd-nightly-apt/public
+  root * /home/web/NFD-nightly-apt/public
   file_server {
     hide {http.vars.root}/*/conf {http.vars.root}/*/db
     browse
