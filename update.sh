@@ -23,18 +23,20 @@ done
 
 add_zips() {
   TMPDIR=/tmp/nfd-nightly-apt-$1-$2
+  [[ -d $TMPDIR ]] && rm -rf $TMPDIR
   mkdir -p $TMPDIR
   cd $TMPDIR
   for ZIP in "${ROOTDIR}/dl/*$3.zip"; do
     unzip "$ZIP"
   done
+  reprepro -v -b $ROOTDIR/public/$1 -A $4 removematched $2 '*'
   reprepro -v -b $ROOTDIR/public/$1 includedeb $2 *.deb
   cd $ROOTDIR
   [[ -d $TMPDIR ]] && rm -rf $TMPDIR
 }
 
-add_zips debian buster buster-amd64
-add_zips debian buster buster-armv7
-add_zips ubuntu bionic bionic-amd64
-add_zips ubuntu focal focal-amd64
-add_zips raspberrypi buster buster-armv6
+add_zips debian buster buster-amd64 amd64
+add_zips debian buster buster-armv7 armhf
+add_zips ubuntu bionic bionic-amd64 amd64
+add_zips ubuntu focal focal-amd64 amd64
+add_zips raspberrypi buster buster-armv6 armhf
