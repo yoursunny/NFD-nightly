@@ -19,6 +19,10 @@
     "ndn-tools": {
       "in_matrix": true,
       "repo": "https://github.com/named-data/ndn-tools.git"
+    },
+    "infoedit": {
+      "in_matrix": true,
+      "repo": "https://github.com/NDN-Routing/infoedit.git"
     }
   },
   "target": {

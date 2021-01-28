@@ -1,7 +1,7 @@
 name: build
 on:
   push:
-    branched:
+    branches:
       - develop
   schedule:
     - cron: '0 0 * * 0'
@@ -27,7 +27,7 @@ jobs:
       matrix:
         target:
           - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
-      fail-fast: false
+      max-parallel: 10
     name: ndn-cxx ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v2
@@ -45,7 +45,7 @@ jobs:
           - ${{ fromJson(needs.prepare-matrix.outputs.proj) }}
         target:
           - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
-      fail-fast: false
+      max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v2
