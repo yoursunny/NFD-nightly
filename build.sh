@@ -4,7 +4,6 @@ PROJ=$1
 TARGET=$2
 
 BASEIMG=$(jq -r '.target | to_entries[] | select(.key == "'$TARGET'") | .value.base' matrix.json)
-REPO=$(jq -r '.proj | to_entries[] | select(.key == "'$PROJ'") | .value.repo' matrix.json)
 
 (
   echo 'FROM '$BASEIMG
@@ -14,8 +13,8 @@ REPO=$(jq -r '.proj | to_entries[] | select(.key == "'$PROJ'") | .value.repo' ma
   if [[ -d deps ]]; then
     echo 'COPY deps /deps'
   fi
-  echo 'COPY compile.sh /'
-  echo 'RUN /bin/bash /compile.sh '$PROJ $REPO
+  echo 'COPY compile.sh matrix.json /'
+  echo 'RUN /bin/bash /compile.sh '$PROJ
 ) > Dockerfile
 
 docker build -t nfd-nightly-build .
