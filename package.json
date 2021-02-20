@@ -4,6 +4,6 @@
     "lint": "xo --fix"
   },
   "devDependencies": {
-    "@yoursunny/xo-config": "^0.36.1"
+    "@yoursunny/xo-config": "^0.37.0"
   }
 }

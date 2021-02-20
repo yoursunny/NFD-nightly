@@ -64,7 +64,7 @@ function renderArtifacts(run, artifacts) {
   const { workflow_runs: runs } = await (await fetch("https://api.github.com/repos/yoursunny/NFD-nightly/actions/runs")).json();
   for (const run of runs) {
     if (run.conclusion !== "success" ||
-        run.head_branch !== "master" ||
+        run.head_branch !== "main" ||
         Date.parse(run.updated_at) < since) {
       continue;
     }
