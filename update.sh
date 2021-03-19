@@ -10,7 +10,7 @@ curl_gh() {
 
 ARTIFACTS_URL=$(curl_gh https://api.github.com/repos/${REPO}/actions/runs | \
   jq -r "[ .workflow_runs[] | select(.conclusion==\"success\" and .head_branch==\"${BRANCH}\") ] [0] | .artifacts_url")
-DOWNLOAD_URLS=$(curl_gh $ARTIFACTS_URL | jq -r '.artifacts[] | .archive_download_url')
+DOWNLOAD_URLS=$(curl_gh "${ARTIFACTS_URL}?per_page=100" | jq -r '.artifacts[] | .archive_download_url')
 
 rm -rf $ROOTDIR/dl
 mkdir -p $ROOTDIR/dl
