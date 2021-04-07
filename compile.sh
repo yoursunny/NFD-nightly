@@ -6,8 +6,8 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -qq --no-install-recommends ca-certificates devscripts equivs gawk git jq lsb-release python3
 DISTRO=$(lsb_release -sc)
-REPO=$(jq -r '.proj | to_entries[] | select(.key == "'$PROJ'") | .value.repo' /matrix.json)
-DEP_NDNCXX=$(jq -r '.proj | to_entries[] | select(.key == "'$PROJ'") | .value.dep_ndncxx' /matrix.json)
+REPO=$(jq -r '.proj["'$PROJ'"].repo' /matrix.json)
+GROUP=$(jq -r '.proj["'$PROJ'"].group' /matrix.json)
 
 mkdir -p /source
 
@@ -30,18 +30,24 @@ else
 fi
 PKGVER="${SRCVER}-nightly"
 
-if [[ ${DEP_NDNCXX} == true ]]; then
-  # ndn-cxx does not have a stable ABI, so the dependent version should contain ndn-cxx version
-  NDNCXX_PKGVER=$(dpkg -s libndn-cxx | awk '$1=="Version:" { print $2 }')
-  NDNCXX_SRCVER=${NDNCXX_PKGVER/-nightly~*}
-  NDNCXX_SRCVER=${NDNCXX_SRCVER//-/.}
-  PKGVER="${PKGVER}~ndncxx${NDNCXX_SRCVER}"
+if [[ $GROUP -eq 2 ]]; then
+  DEPVER_PKG=libpsync
+  DEPVER_LABEL=psync
+elif [[ $GROUP -eq 1 ]]; then
+  DEPVER_PKG=libndn-cxx
+  DEPVER_LABEL=ndncxx
+fi
+if [[ -n $DEPVER_PKG ]]; then
+  # ndn-cxx and PSync do not have a stable ABI, so the dependent version should contain their versions
+  DEP_PKGVER=$(dpkg -s ${DEPVER_PKG} | awk '$1=="Version:" { print $2 }')
+  DEP_SRCVER=${DEP_PKGVER/~${DISTRO}/}
+  DEP_SRCVER=${DEP_SRCVER/-nightly/}
+  DEP_SRCVER=${DEP_SRCVER//-/.}
+  PKGVER="${PKGVER}~${DEPVER_LABEL}${DEP_SRCVER}"
 fi
 PKGVER="${PKGVER}~${DISTRO}"
 
-if [[ -d debian ]]; then
-  true
-elif [[ -d ../ppa-packaging/$PROJ ]]; then
+if ! [[ -d debian ]] && [[ -d ../ppa-packaging/$PROJ ]]; then
   cp -R ../ppa-packaging/$PROJ/debian .
 fi
 sed -i '/override_dh_auto_build/,/^$/ s|./waf build$|./waf build -j'$(nproc)'|' debian/rules
@@ -54,11 +60,16 @@ rm -rf debian/source
   echo " -- Junxiao Shi <deb@mail1.yoursunny.com>  $(date -R)"
 ) > debian/changelog
 
-if [[ ${DEP_NDNCXX} == true ]]; then
-  # ndn-cxx does not have a stable ABI, so the dependent should depend on exact ndn-cxx version
+if [[ $PROJ == 'nlsr' ]]; then
+  # as of 2021-04-07, NLSR does not need ChronoSync, but ppa-packaging is not yet updated
+  sed -i -e '/\blibchronosync-dev\b/ d' debian/control
+fi
+
+if [[ -n $DEPVER_PKG ]]; then
+  # ndn-cxx and PSync do not have a stable ABI, so the dependent should depend on exact version
   sed -i -E \
-    -e '/^Depends:.*shlibs:Depends/ s|, libndn-cxx\b||' \
-    -e "/^Depends:/ s|(\\\$\{shlibs:Depends\})|libndn-cxx (= ${NDNCXX_PKGVER}), \1|" \
+    -e "/^Depends:.*shlibs:Depends/ s|, ${DEPVER_PKG}\b||" \
+    -e "/^Depends:/ s|(\\\$\{shlibs:Depends\})|${DEPVER_PKG} (= ${DEP_PKGVER}), \1|" \
     debian/control
 fi
 

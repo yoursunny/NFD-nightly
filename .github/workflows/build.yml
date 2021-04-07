@@ -11,38 +11,44 @@ jobs:
   prepare-matrix:
     runs-on: ubuntu-18.04
     outputs:
-      proj: ${{ steps.set.outputs.proj }}
+      proj0: ${{ steps.set.outputs.proj0 }}
+      proj1: ${{ steps.set.outputs.proj1 }}
+      proj2: ${{ steps.set.outputs.proj2 }}
       target: ${{ steps.set.outputs.target }}
     steps:
       - uses: actions/checkout@v2
       - id: set
         name: set variables
         run: |
-          echo '::set-output name=proj::'$(jq -c '.proj | with_entries(select(.value.in_matrix)) | keys' matrix.json)
+          echo '::set-output name=proj0::'$(jq -c '.proj | with_entries(select(.value.group == 0)) | keys' matrix.json)
+          echo '::set-output name=proj1::'$(jq -c '.proj | with_entries(select(.value.group == 1)) | keys' matrix.json)
+          echo '::set-output name=proj2::'$(jq -c '.proj | with_entries(select(.value.group == 2)) | keys' matrix.json)
           echo '::set-output name=target::'$(jq -c '.target | with_entries(select(.value.skip | not)) | keys' matrix.json)
-  ndn-cxx:
+  group0:
+    runs-on: ubuntu-18.04
     needs: [prepare-matrix]
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        target:
-          - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
-      max-parallel: 10
-    name: ndn-cxx ${{ matrix.target }}
-    steps:
-      - uses: actions/checkout@v2
-      - run: bash build.sh ndn-cxx ${{ matrix.target }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ndn-cxx ${{ matrix.target }}
-          path: output
-  proj:
-    runs-on: ubuntu-18.04
-    needs: [prepare-matrix, ndn-cxx]
     strategy:
       matrix:
         proj:
-          - ${{ fromJson(needs.prepare-matrix.outputs.proj) }}
+          - ${{ fromJson(needs.prepare-matrix.outputs.proj0) }}
+        target:
+          - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
+      max-parallel: 10
+    name: ${{ matrix.proj }} ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v2
+      - run: bash build.sh ${{ matrix.proj }} ${{ matrix.target }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.proj }} ${{ matrix.target }}
+          path: output
+  group1:
+    runs-on: ubuntu-18.04
+    needs: [prepare-matrix, group0]
+    strategy:
+      matrix:
+        proj:
+          - ${{ fromJson(needs.prepare-matrix.outputs.proj1) }}
         target:
           - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
       max-parallel: 10
@@ -58,8 +64,34 @@ jobs:
         with:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
+  group2:
+    runs-on: ubuntu-18.04
+    needs: [prepare-matrix, group1]
+    strategy:
+      matrix:
+        proj:
+          - ${{ fromJson(needs.prepare-matrix.outputs.proj2) }}
+        target:
+          - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
+      max-parallel: 10
+    name: ${{ matrix.proj }} ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: ndn-cxx ${{ matrix.target }}
+          path: deps
+      - uses: actions/download-artifact@v2
+        with:
+          name: libpsync ${{ matrix.target }}
+          path: deps
+      - run: bash build.sh ${{ matrix.proj }} ${{ matrix.target }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.proj }} ${{ matrix.target }}
+          path: output
   publish:
     runs-on: ubuntu-18.04
-    needs: [proj]
+    needs: [group2]
     steps:
       - run: true

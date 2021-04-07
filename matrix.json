@@ -1,34 +1,32 @@
 {
   "proj": {
     "ndn-cxx": {
-      "in_matrix": false,
       "repo": "https://github.com/named-data/ndn-cxx.git",
-      "dep_ndncxx": false
+      "group": 0
     },
     "libpsync": {
-      "in_matrix": true,
       "repo": "https://github.com/named-data/PSync.git",
-      "dep_ndncxx": true
+      "group": 1
     },
     "name-based-access-control": {
-      "in_matrix": true,
       "repo": "https://github.com/named-data/name-based-access-control.git",
-      "dep_ndncxx": true
+      "group": 1
     },
     "nfd": {
-      "in_matrix": true,
       "repo": "https://github.com/named-data/NFD.git",
-      "dep_ndncxx": true
+      "group": 1
     },
     "ndn-tools": {
-      "in_matrix": true,
       "repo": "https://github.com/named-data/ndn-tools.git",
-      "dep_ndncxx": true
+      "group": 1
+    },
+    "nlsr": {
+      "repo": "https://github.com/named-data/NLSR.git",
+      "group": 2
     },
     "infoedit": {
-      "in_matrix": true,
       "repo": "https://github.com/NDN-Routing/infoedit.git",
-      "dep_ndncxx": false
+      "group": 0
     }
   },
   "target": {
