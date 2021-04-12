@@ -27,6 +27,10 @@
     "infoedit": {
       "repo": "https://github.com/NDN-Routing/infoedit.git",
       "group": 0
+    },
+    "ndn6-tools": {
+      "repo": "https://github.com/yoursunny/ndn6-tools.git",
+      "group": 1
     }
   },
   "target": {
