@@ -55,10 +55,13 @@ sed -i '/override_dh_auto_build/,/^$/ s|./waf build$|./waf build -j'$(nproc)'|' 
 rm -rf debian/source
 
 (
-  echo "${PROJ} (${PKGVER}) ${DISTRO};"
+  echo "${PROJ} (${PKGVER}) ${DISTRO}; urgency=medium"
   echo "  * Automated build of version ${SRCVER}"
   echo " -- Junxiao Shi <deb@mail1.yoursunny.com>  $(date -R)"
 ) > debian/changelog
+
+# dh-systemd is part of debhelper, and has been removed in bullseye
+sed -i -e '/\bdh-systemd\b/ d' debian/control
 
 if [[ $PROJ == 'nlsr' ]]; then
   # as of 2021-04-07, NLSR does not need ChronoSync, but ppa-packaging is not yet updated
@@ -73,7 +76,7 @@ if [[ -n $DEPVER_PKG ]]; then
     debian/control
 fi
 
-mk-build-deps -ir -t "apt-get -qq --no-install-recommends"
+mk-build-deps -ir -t "apt-get -y -o Debug::pkgProblemResolver=yes --no-install-recommends"
 debuild -us -uc
 
 cd /source

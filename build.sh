@@ -3,7 +3,7 @@ set -eo pipefail
 PROJ=$1
 TARGET=$2
 
-BASEIMG=$(jq -r '.target | to_entries[] | select(.key == "'$TARGET'") | .value.base' matrix.json)
+BASEIMG=$(jq -r --arg target "$TARGET" '.target[$target].base' matrix.json)
 
 (
   echo 'FROM '$BASEIMG

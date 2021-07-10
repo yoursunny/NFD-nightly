@@ -46,6 +46,10 @@
       "skip": false,
       "base": "debian:buster"
     },
+    "bullseye-aarch64": {
+      "skip": false,
+      "base": "balenalib/generic-aarch64:bullseye-build"
+    },
     "buster-armv7": {
       "skip": false,
       "base": "balenalib/generic-armv7ahf:buster-build"
