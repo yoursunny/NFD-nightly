@@ -9,7 +9,7 @@ curl_gh() {
 }
 
 ARTIFACTS_URL=$(curl_gh https://api.github.com/repos/${REPO}/actions/runs | \
-  jq -r "[ .workflow_runs[] | select(.conclusion==\"success\" and .head_branch==\"${BRANCH}\") ] [0] | .artifacts_url")
+  jq -r --arg branch $BRANCH '.workflow_runs | map(select(.conclusion=="success" and .head_branch==$branch))[0] | .artifacts_url')
 DOWNLOAD_URLS=$(curl_gh "${ARTIFACTS_URL}?per_page=100" | jq -r '.artifacts[] | .archive_download_url')
 
 rm -rf $ROOTDIR/dl
@@ -29,6 +29,7 @@ add_zips() {
   for ZIP in "${ROOTDIR}/dl/*$3.zip"; do
     unzip "$ZIP"
   done
+  reprepro -v -b $ROOTDIR/public/$1 clearvanished
   reprepro -v -b $ROOTDIR/public/$1 -A $4 removematched $2 '*'
   reprepro -v -b $ROOTDIR/public/$1 includedeb $2 *.deb
   cd $ROOTDIR
@@ -37,6 +38,9 @@ add_zips() {
 
 add_zips debian buster buster-amd64 amd64
 add_zips debian buster buster-armv7 armhf
+add_zips debian bullseye bullseye-aarch64 arm64
 add_zips ubuntu bionic bionic-amd64 amd64
 add_zips ubuntu focal focal-amd64 amd64
 add_zips raspberrypi buster buster-armv6 armhf
+
+rm -rf $ROOTDIR/dl
