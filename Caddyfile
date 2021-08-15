@@ -1,10 +1,18 @@
 https://nfd-nightly-apt.ndn.today {
-  bind 45.142.157.169 2604:9cc0:0:15ec::80
-
   root * /home/web/NFD-nightly-apt/public
   file_server {
     hide {http.vars.root}/*/conf {http.vars.root}/*/db
     browse
+  }
+
+  header {
+    -Server
+    Strict-Transport-Security max-age=2592000
+    Content-Security-Policy "default-src https: 'unsafe-inline'"
+    X-Frame-Options SAMEORIGIN
+    X-Content-Type-Options nosniff
+    Referrer-Policy no-referrer-when-downgrade
+    Access-Control-Allow-Origin *
   }
 
   log {
