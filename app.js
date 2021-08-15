@@ -1,95 +1,73 @@
-import { el, mount } from "https://cdn.jsdelivr.net/npm/redom@3.27.1/dist/redom.es.min.js";
+for (const $form of document.querySelectorAll("form")) {
+  $form.addEventListener("submit", (evt) => evt.preventDefault());
+}
 
-const PROJ = [
-  { id: "ndn-cxx" },
-  { id: "nfd", title: "NFD" },
-  { id: "ndn-tools" },
-  { id: "libpsync", title: "PSync" },
-  { id: "name-based-access-control", title: "NAC" },
-];
+const $setup = document.querySelector("#p_setup");
+const $error = document.querySelector("#p_error");
+const $list = document.querySelector("#p_list");
+/** @type {AbortController|undefined} */
+let abort;
 
-/** @type {HTMLParagraphElement} */
-const $msg = document.querySelector("#msg");
+async function update() {
+  const $input = document.querySelector("input[name=os]:checked");
+  if (!$input) {
+    return;
+  }
+  const $label = $input.parentElement;
+  const repo = $label.getAttribute("data-repo");
+  const distro = $label.getAttribute("data-distro");
+  const arch = $label.getAttribute("data-arch");
+  const source = `deb [arch=${arch} trusted=yes] https://nfd-nightly-apt.ndn.today/${repo} ${distro} main`;
+  $setup.textContent = `echo "${source}" \\\n  | sudo tee /etc/apt/sources.list.d/nfd-nightly.list`;
 
-/** @type {HTMLTableSectionElement} */
-const $tbody = el("tbody");
-
-function renderArtifacts(run, artifacts) {
-  const suite = run.check_suite_url.split("/").pop();
-  const platforms = artifacts.filter((a) => a.name.startsWith("ndn-cxx ")).map((a) => a.name.slice(8));
-  if (platforms.length === 0) {
+  const list = `https://nfd-nightly-apt.ndn.today/${repo}/dists/${distro}/main/binary-${arch}/Packages`;
+  $error.classList.add("hidden");
+  $list.classList.add("hidden");
+  abort?.abort();
+  abort = new AbortController();
+  const { signal } = abort;
+  let packages = "";
+  try {
+    packages = await (await fetch(list, { signal })).text();
+  } catch (err) {
+    if (!signal.aborted) {
+      $error.textContent = err.toString();
+      $error.classList.remove("hidden");
+    }
     return;
   }
 
-  const rows = [];
-  for (const platform of platforms) {
-    const $tr = el("tr",
-      el("td", platform),
-    );
-    for (const { id } of PROJ) {
-      const artifact = artifacts.find((a) => a.name === `${id} ${platform}`);
-      if (artifact) {
-        const href = `https://github.com/yoursunny/NFD-nightly/suites/${suite}/artifacts/${artifact.id}`;
-        mount($tr,
-          el("td",
-            el("a", { href, target: "_blank", rel: "noopener" }, "download"),
-          ),
-        );
-      } else {
-        mount($tr,
-          el("td", "-"),
-        );
-      }
+  $list.querySelector("tbody")?.remove();
+  const $tbody = document.createElement("tbody");
+  for (const lines of packages.split("\n\n")) {
+    const kv = {};
+    for (const line of lines.split("\n")) {
+      const [k, v] = line.split(":");
+      kv[k.toLowerCase()] = (v ?? "").trim();
     }
-    rows.push($tr);
-  }
 
-  mount(rows[0],
-    el("td",
-      { rowSpan: platforms.length },
-      `${run.id}`,
-      el("br"),
-      el("small", run.updated_at),
-    ),
-    rows[0].firstChild,
-  );
-
-  rows.forEach(($tr) => mount($tbody, $tr));
-}
-
-(async () => {
-  $msg.textContent = "loading";
-  const since = Date.now() - 30 * 86400000;
-
-  const { workflow_runs: runs } = await (await fetch("https://api.github.com/repos/yoursunny/NFD-nightly/actions/runs")).json();
-  for (const run of runs) {
-    if (run.conclusion !== "success" ||
-        run.head_branch !== "main" ||
-        Date.parse(run.updated_at) < since) {
+    const $tr = document.createElement("tr");
+    let missing = false;
+    for (const k of ["package", "description"]) {
+      const v = kv[k];
+      if (!v) {
+        missing = true;
+        break;
+      }
+      const $td = document.createElement("td");
+      $td.textContent = v;
+      $tr.append($td);
+    }
+    if (missing) {
       continue;
     }
-
-    try {
-      const { artifacts } = await (await fetch(run.artifacts_url, { cache: "force-cache" })).json();
-      renderArtifacts(run, artifacts);
-    } catch (err) {
-      console.error(err);
-    }
+    $tbody.append($tr);
   }
-})().then(() => {
-  const $table = el("table.pure-table.pure-table-horizontal",
-    el("thead",
-      el("tr",
-        el("th", "build"),
-        el("th", "platform"),
-        ...PROJ.map(({ id, title }) => el("th", title ?? id)),
-      ),
-    ),
-    $tbody,
-  );
-  mount(document.querySelector("#table"), $table);
-  $msg.remove();
-}, (err) => {
-  console.error(err);
-  $msg.textContent = err;
-});
+  $list.append($tbody);
+  $list.classList.remove("hidden");
+}
+
+for (const $input of document.querySelectorAll("input[name=os]")) {
+  $input.addEventListener("change", update);
+}
+update();

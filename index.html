@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>NFD nightly packages</title>
+<title>NFD nightly APT repository</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/purecss@2.0.3,npm/purecss@2.0.3/build/grids-responsive-min.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/purecss@2,npm/purecss@2/build/grids-responsive-min.min.css">
 <style>
 a { text-decoration:none; }
 html { position:relative; min-height:100%; }
@@ -12,14 +12,50 @@ footer { position:absolute; right:0; bottom:0; left:0; padding:1rem 3rem 1rem 3r
 </style>
 
 <section>
-<h1>NFD nightly packages</h1>
+<h1>NFD nightly APT repository</h1>
 <p>
-This page provides automated builds of <a href="https://named-data.net/doc/NFD/current/" target="_blank" rel="noopener">NDN Forwarding Daemon (NFD)</a> and related software.
-See <a href="https://yoursunny.com/t/2020/NFD-nightly/" target="_blank" rel="noopener">instructions</a> and <a href="https://yoursunny.com/t/2021/NFD-nightly-apt/" target="_blank" rel="noopener">APT repository</a>.
+Automated builds of <a href="https://named-data.net/doc/NFD/current/" target="_blank" rel="noopener">NDN Forwarding Daemon (NFD)</a> and related software.
 </p>
 
-<p id="msg"></p>
-<div id="table"></div>
+<form class="pure-form">
+  <fieldset>
+    <legend>Operating System</legend>
+    <label class="pure-radio" data-repo="debian" data-distro="buster" data-arch="amd64">
+      <input name="os" type="radio" checked> Debian 10 (Buster), x86_64 (laptops and servers)
+    </label>
+    <label class="pure-radio" data-repo="debian" data-distro="buster" data-arch="armhf">
+      <input name="os" type="radio"> Debian 10 (Buster), ARMv7 (Raspberry Pi 2/3/4)
+    </label>
+    <label class="pure-radio" data-repo="debian" data-distro="bullseye" data-arch="arm64">
+      <input name="os" type="radio"> Debian 11 (Bullseye), ARMv8 (PinePhone)
+    </label>
+    <label class="pure-radio" data-repo="ubuntu" data-distro="bionic" data-arch="amd64">
+      <input name="os" type="radio"> Ubuntu 18.04 (Bionic), x86_64 (laptops and servers)
+    </label>
+    <label class="pure-radio" data-repo="ubuntu" data-distro="focal" data-arch="amd64">
+      <input name="os" type="radio"> Ubuntu 20.04 (Focal), x86_64 (laptops and servers)
+    </label>
+    <label class="pure-radio" data-repo="raspberrypi" data-distro="buster" data-arch="armhf">
+      <input name="os" type="radio"> Raspberry Pi OS (Buster), ARMv6 (Raspberry Pi Zero)
+    </label>
+  </fieldset>
+  <fieldset>
+    <legend>Setup Command</legend>
+    <pre id="p_setup"></pre>
+  </fieldset>
+  <fieldset>
+    <legend>Available Packages</legend>
+    <p id="p_error" class="hidden"></p>
+    <table id="p_list" class="pure-table hidden">
+      <thead>
+        <tr>
+          <th>Package</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+    </table>
+  </fieldset>
+</form>
 </section>
 
 <footer>
