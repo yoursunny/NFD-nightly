@@ -1,13 +1,13 @@
 #!/bin/bash
 set -eo pipefail
 PROJ=$1
+REPO=$2
+GROUP=$3
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -qq --no-install-recommends ca-certificates devscripts equivs gawk git jq lsb-release python3
+apt-get install -qq --no-install-recommends ca-certificates devscripts equivs gawk git lsb-release python3
 DISTRO=$(lsb_release -sc)
-REPO=$(jq -r '.proj["'$PROJ'"].repo' /matrix.json)
-GROUP=$(jq -r '.proj["'$PROJ'"].group' /matrix.json)
 
 mkdir -p /source
 
