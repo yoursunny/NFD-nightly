@@ -3,5 +3,5 @@ Architectures: amd64 armhf
 Components: main
 
 Codename: bullseye
-Architectures: arm64
+Architectures: amd64 arm64
 Components: main

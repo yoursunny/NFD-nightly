@@ -36,11 +36,12 @@ add_zips() {
   [[ -d $TMPDIR ]] && rm -rf $TMPDIR
 }
 
-add_zips debian buster buster-amd64 amd64
-add_zips debian buster buster-armv7 armhf
-add_zips debian bullseye bullseye-aarch64 arm64
 add_zips ubuntu bionic bionic-amd64 amd64
 add_zips ubuntu focal focal-amd64 amd64
+add_zips debian buster buster-amd64 amd64
+add_zips debian buster buster-armv7 armhf
+add_zips debian bullseye bullseye-amd64 amd64
+add_zips debian bullseye bullseye-arm64 arm64
 add_zips raspberrypi buster buster-armv6 armhf
 
 rm -rf $ROOTDIR/dl
