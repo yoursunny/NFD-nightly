@@ -12,6 +12,9 @@ GROUP=$(jq -r --arg proj "$PROJ" '.proj[$proj].group' matrix.json)
   if [[ $BASEIMG == balenalib* ]]; then
     echo 'RUN ["cross-build-start"]'
   fi
+  echo 'ENV DEBIAN_FRONTEND=noninteractive'
+  echo 'RUN apt-get update \'
+  echo ' && apt-get install -qq --no-install-recommends ca-certificates devscripts equivs gawk git lsb-release python3'
   if [[ -d deps ]]; then
     echo 'COPY deps /deps'
   fi

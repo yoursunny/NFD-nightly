@@ -3,10 +3,6 @@ set -eo pipefail
 PROJ=$1
 REPO=$2
 GROUP=$3
-
-export DEBIAN_FRONTEND=noninteractive
-apt-get update
-apt-get install -qq --no-install-recommends ca-certificates devscripts equivs gawk git lsb-release python3
 DISTRO=$(lsb_release -sc)
 
 mkdir -p /source
@@ -61,12 +57,34 @@ rm -rf debian/source
 ) > debian/changelog
 
 # dh-systemd is part of debhelper, and has been removed in bullseye
-sed -i -e '/\bdh-systemd\b/ d' debian/control
+# as of 2021-08-18, all packages use Python 3, but ppa-packaging is not yet updated
+sed -i -E \
+  -e '/dh-systemd/ d' \
+  -e 's/python \([^)]+\)/python3 (>= 3.6.0)/' \
+  -e 's/python2.7-minimal/python3-minimal/' \
+  debian/control
 
 if [[ $PROJ == 'nlsr' ]]; then
   # as of 2021-04-07, NLSR does not need ChronoSync, but ppa-packaging is not yet updated
-  sed -i -e '/\blibchronosync-dev\b/ d' debian/control
+  sed -i -e '/libchronosync-dev/ d' debian/control
 fi
+
+BOOST_VER=$(apt-cache show libboost-dev | awk '$1=="Depends:" { gsub("libboost|-dev","",$2); print $2 }')
+BOOST_PKGS=(
+  atomic
+  chrono
+  date-time
+  filesystem
+  iostreams
+  log
+  program-options
+  regex
+  stacktrace
+  system
+  thread
+)
+BOOST_PKGS_REPL=$(echo "${BOOST_PKGS[@]}" | sed -E -e "s/\S+/libboost-\\0${BOOST_VER}-dev\\\\1/g" -e 's/\s+/,\0/g')
+sed -i -E "s|libboost-all-dev( \\([^)]*\\))?|${BOOST_PKGS_REPL}|" debian/control
 
 if [[ -n $DEPVER_PKG ]]; then
   # ndn-cxx and PSync do not have a stable ABI, so the dependent should depend on exact version
