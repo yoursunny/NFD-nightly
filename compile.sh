@@ -69,6 +69,20 @@ if [[ $PROJ == 'nlsr' ]]; then
   sed -i -e '/libchronosync-dev/ d' debian/control
 fi
 
+# delete unnecessary sudo-to-root
+# replace sudo-to-user with gosu, which is safer in Docker
+find debian -name '*.postinst' | xargs --no-run-if-empty sed -i -E \
+  -e 's/^(\s*)sudo -u (\S+) -g (\S+)/\1gosu \2:\3 env/' \
+  -e 's/^(\s*)sudo /\1/'
+for F in $(grep -l 'gosu ' debian/*.postinst || true); do
+  awk -i inplace -vPKG=$(basename -s .postinst $F) '
+    $1=="Package:" && $2==PKG { matching = 1 }
+    matching==1 && $1=="Depends:" { $1 = $1 " gosu," }
+    NF==0 { matching = 0 }
+    { print }
+  ' debian/control
+done
+
 BOOST_VER=$(apt-cache show libboost-dev | awk '$1=="Depends:" { gsub("libboost|-dev","",$2); print $2 }')
 BOOST_PKGS=(
   atomic
@@ -87,7 +101,7 @@ BOOST_PKGS_REPL=$(echo "${BOOST_PKGS[@]}" | sed -E -e "s/\S+/libboost-\\0${BOOST
 sed -i -E "s|libboost-all-dev( \\([^)]*\\))?|${BOOST_PKGS_REPL}|" debian/control
 
 if [[ -n $DEPVER_PKG ]]; then
-  # ndn-cxx and PSync do not have a stable ABI, so the dependent should depend on exact version
+  # ndn-cxx and PSync do not have a stable ABI, so that dependents should depend on exact version
   sed -i -E \
     -e "/^Depends:.*shlibs:Depends/ s|, ${DEPVER_PKG}\b||" \
     -e "/^Depends:/ s|(\\\$\{shlibs:Depends\})|${DEPVER_PKG} (= ${DEP_PKGVER}), \1|" \
@@ -99,3 +113,6 @@ debuild -us -uc
 
 cd /source
 find -not -name '*.deb' -delete
+if [[ $PROJ == 'nlsr' ]]; then
+  rm -f ndn-cxx_*.deb ndn-cxx-dbg_*.deb ndn-cxx-dev_*.deb
+fi
