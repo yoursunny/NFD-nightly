@@ -20,10 +20,10 @@ jobs:
       - id: set
         name: set variables
         run: |
-          echo '::set-output name=proj0::'$(jq -c '.proj | with_entries(select(.value.group == 0)) | keys' matrix.json)
-          echo '::set-output name=proj1::'$(jq -c '.proj | with_entries(select(.value.group == 1)) | keys' matrix.json)
-          echo '::set-output name=proj2::'$(jq -c '.proj | with_entries(select(.value.group == 2)) | keys' matrix.json)
-          echo '::set-output name=target::'$(jq -c '.target | with_entries(select(.value.skip | not)) | keys' matrix.json)
+          echo '::set-output name=proj0::'$(jq -c '.proj | with_entries(select(.value.group==0)) | keys' matrix.json)
+          echo '::set-output name=proj1::'$(jq -c '.proj | with_entries(select(.value.group==1)) | keys' matrix.json)
+          echo '::set-output name=proj2::'$(jq -c '.proj | with_entries(select(.value.group==2)) | keys' matrix.json)
+          echo '::set-output name=target::'$(jq -c '.target | with_entries(select(.value.skip|not)) | keys' matrix.json)
   group0:
     runs-on: ubuntu-18.04
     needs: [prepare-matrix]

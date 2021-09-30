@@ -113,6 +113,6 @@ debuild -us -uc
 
 cd /source
 find -not -name '*.deb' -delete
-if [[ $PROJ == 'nlsr' ]]; then
+if [[ $PROJ == 'ndn-cxx' ]]; then
   rm -f ndn-cxx_*.deb ndn-cxx-dbg_*.deb ndn-cxx-dev_*.deb
 fi
