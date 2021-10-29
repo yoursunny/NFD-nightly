@@ -18,8 +18,7 @@ fi
 
 cd /source/$PROJ
 
-if [[ -x ./waf ]]; then
-  ./waf version
+if [[ -x ./waf ]] && ./waf version && [[ -f VERSION.info ]]; then
   SRCVER=$(cat VERSION.info)
 else
   SRCVER=$(git show -s --format='%ct %H' | gawk '{ printf "0.0.0-%s-%s", strftime("%Y%m%d%H%M%S", $1), substr($2,1,12) }')

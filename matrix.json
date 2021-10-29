@@ -24,6 +24,14 @@
       "repo": "https://github.com/named-data/NLSR.git",
       "group": 2
     },
+    "repo-ng": {
+      "repo": "https://github.com/named-data/repo-ng.git",
+      "group": 1
+    },
+    "ndn-traffic-generator": {
+      "repo": "https://github.com/named-data/ndn-traffic-generator.git",
+      "group": 1
+    },
     "infoedit": {
       "repo": "https://github.com/NDN-Routing/infoedit.git",
       "group": 0
