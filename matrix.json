@@ -50,10 +50,6 @@
       "skip": false,
       "base": "ubuntu:20.04"
     },
-    "buster-amd64": {
-      "skip": false,
-      "base": "debian:buster"
-    },
     "buster-armv7": {
       "skip": false,
       "base": "balenalib/generic-armv7ahf:buster-build"
