@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <title>NFD nightly APT repository</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/purecss@2,npm/purecss@2/build/grids-responsive-min.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@2">
 <style>
 a { text-decoration:none; }
 html { position:relative; min-height:100%; }
@@ -14,32 +14,30 @@ footer { position:absolute; right:0; bottom:0; left:0; padding:1rem 3rem 1rem 3r
 <section>
 <h1>NFD nightly APT repository</h1>
 <p>
-Automated builds of <a href="https://named-data.net/doc/NFD/current/" target="_blank" rel="noopener">NDN Forwarding Daemon (NFD)</a> and related software.
+Automated builds of NDN Forwarding Daemon (NFD) and related software.
+(<a href="https://yoursunny.com/t/2021/NFD-nightly-usage/" target="_blank" rel="noopener">usage instructions</a>)
 </p>
 
 <form class="pure-form">
   <fieldset>
     <legend>Operating System</legend>
-    <label class="pure-radio" data-repo="debian" data-distro="buster" data-arch="amd64">
-      <input name="os" type="radio" checked> Debian 10 (Buster), x86_64 (laptops and servers)
-    </label>
     <label class="pure-radio" data-repo="debian" data-distro="buster" data-arch="armhf">
-      <input name="os" type="radio"> Debian 10 (Buster), ARMv7 (Raspberry Pi 2/3/4)
+      <input name="os" type="radio"> Debian 10 (Buster), ARMv7 (Raspberry Pi 2/3/4/Zero2)
     </label>
     <label class="pure-radio" data-repo="debian" data-distro="bullseye" data-arch="amd64">
-      <input name="os" type="radio"> Debian 11 (Bullseye), x86_64 (laptops and servers)
+      <input name="os" type="radio" checked> Debian 11 (Bullseye), x86_64 (laptops and servers, recommended for Docker)
     </label>
     <label class="pure-radio" data-repo="debian" data-distro="bullseye" data-arch="arm64">
       <input name="os" type="radio"> Debian 11 (Bullseye), ARMv8 (PinePhone)
     </label>
     <label class="pure-radio" data-repo="ubuntu" data-distro="bionic" data-arch="amd64">
-      <input name="os" type="radio"> Ubuntu 18.04 (Bionic), x86_64 (laptops and servers)
+      <input name="os" type="radio"> Ubuntu 18.04 (Bionic), x86_64 (laptops and servers, not recommended)
     </label>
     <label class="pure-radio" data-repo="ubuntu" data-distro="focal" data-arch="amd64">
       <input name="os" type="radio"> Ubuntu 20.04 (Focal), x86_64 (laptops and servers)
     </label>
     <label class="pure-radio" data-repo="raspberrypi" data-distro="buster" data-arch="armhf">
-      <input name="os" type="radio"> Raspberry Pi OS (Buster), ARMv6 (Raspberry Pi Zero)
+      <input name="os" type="radio"> Raspberry Pi OS (Buster), ARMv6 (Raspberry Pi Zero W)
     </label>
   </fieldset>
   <fieldset>

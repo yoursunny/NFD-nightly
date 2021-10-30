@@ -1,3 +1,3 @@
-const { js, redom, merge } = require("@yoursunny/xo-config");
+const { js, web, merge } = require("@yoursunny/xo-config");
 
-module.exports = merge(js, redom);
+module.exports = merge(js, web);

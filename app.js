@@ -1,3 +1,5 @@
+const BASE = "https://nfd-nightly-apt.ndn.today";
+
 for (const $form of document.querySelectorAll("form")) {
   $form.addEventListener("submit", (evt) => evt.preventDefault());
 }
@@ -17,10 +19,10 @@ async function update() {
   const repo = $label.getAttribute("data-repo");
   const distro = $label.getAttribute("data-distro");
   const arch = $label.getAttribute("data-arch");
-  const source = `deb [arch=${arch} trusted=yes] https://nfd-nightly-apt.ndn.today/${repo} ${distro} main`;
+  const source = `deb [arch=${arch} trusted=yes] ${BASE}/${repo} ${distro} main`;
   $setup.textContent = `echo "${source}" \\\n  | sudo tee /etc/apt/sources.list.d/nfd-nightly.list`;
 
-  const list = `https://nfd-nightly-apt.ndn.today/${repo}/dists/${distro}/main/binary-${arch}/Packages`;
+  const list = `${BASE}/${repo}/dists/${distro}/main/binary-${arch}/Packages`;
   $error.classList.add("hidden");
   $list.classList.add("hidden");
   abort?.abort();
