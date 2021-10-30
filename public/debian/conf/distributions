@@ -1,5 +1,5 @@
 Codename: buster
-Architectures: amd64 armhf
+Architectures: armhf
 Components: main
 
 Codename: bullseye
