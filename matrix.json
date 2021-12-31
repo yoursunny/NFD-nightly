@@ -62,9 +62,9 @@
       "skip": false,
       "base": "balenalib/generic-aarch64:bullseye-build"
     },
-    "buster-armv6": {
+    "bullseye-armv6": {
       "skip": false,
-      "base": "balenalib/raspberry-pi:buster-build"
+      "base": "balenalib/raspberry-pi:bullseye-build"
     }
   }
 }

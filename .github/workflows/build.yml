@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  prepare-matrix:
-    runs-on: ubuntu-18.04
+  prepare:
+    runs-on: ubuntu-20.04
     outputs:
       proj0: ${{ steps.set.outputs.proj0 }}
       proj1: ${{ steps.set.outputs.proj1 }}
@@ -20,19 +20,19 @@ jobs:
       - id: set
         name: set variables
         run: |
-          echo '::set-output name=proj0::'$(jq -c '.proj | with_entries(select(.value.group==0)) | keys' matrix.json)
-          echo '::set-output name=proj1::'$(jq -c '.proj | with_entries(select(.value.group==1)) | keys' matrix.json)
-          echo '::set-output name=proj2::'$(jq -c '.proj | with_entries(select(.value.group==2)) | keys' matrix.json)
-          echo '::set-output name=target::'$(jq -c '.target | with_entries(select(.value.skip|not)) | keys' matrix.json)
+          echo ::set-output name=proj0::$(jq -c '.proj | with_entries(select(.value.group==0)) | keys' matrix.json)
+          echo ::set-output name=proj1::$(jq -c '.proj | with_entries(select(.value.group==1)) | keys' matrix.json)
+          echo ::set-output name=proj2::$(jq -c '.proj | with_entries(select(.value.group==2)) | keys' matrix.json)
+          echo ::set-output name=target::$(jq -c '.target | with_entries(select(.value.skip|not)) | keys' matrix.json)
   group0:
-    runs-on: ubuntu-18.04
-    needs: [prepare-matrix]
+    runs-on: ubuntu-20.04
+    needs: [prepare]
     strategy:
       matrix:
         proj:
-          - ${{ fromJson(needs.prepare-matrix.outputs.proj0) }}
+          - ${{ fromJson(needs.prepare.outputs.proj0) }}
         target:
-          - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
+          - ${{ fromJson(needs.prepare.outputs.target) }}
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
@@ -43,14 +43,14 @@ jobs:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
   group1:
-    runs-on: ubuntu-18.04
-    needs: [prepare-matrix, group0]
+    runs-on: ubuntu-20.04
+    needs: [prepare, group0]
     strategy:
       matrix:
         proj:
-          - ${{ fromJson(needs.prepare-matrix.outputs.proj1) }}
+          - ${{ fromJson(needs.prepare.outputs.proj1) }}
         target:
-          - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
+          - ${{ fromJson(needs.prepare.outputs.target) }}
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
@@ -65,14 +65,14 @@ jobs:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
   group2:
-    runs-on: ubuntu-18.04
-    needs: [prepare-matrix, group1]
+    runs-on: ubuntu-20.04
+    needs: [prepare, group1]
     strategy:
       matrix:
         proj:
-          - ${{ fromJson(needs.prepare-matrix.outputs.proj2) }}
+          - ${{ fromJson(needs.prepare.outputs.proj2) }}
         target:
-          - ${{ fromJson(needs.prepare-matrix.outputs.target) }}
+          - ${{ fromJson(needs.prepare.outputs.target) }}
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
@@ -91,7 +91,7 @@ jobs:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
   publish:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: [group2]
     steps:
       - run: true
