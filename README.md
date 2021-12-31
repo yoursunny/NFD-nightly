@@ -1,4 +1,3 @@
-
 # NFD-nightly APT repository
 
 This branch contains scripts to run an APT repository for NFD-nightly.
@@ -9,7 +8,7 @@ To install from the hosted APT repository, please see https://nfd-nightly.ndn.to
 
 ## Installation
 
-Recommended OS: Debian 10 or Ubuntu 20.04
+Recommended OS: Debian 11 or Ubuntu 20.04
 
 1. `sudo apt install reprepro unzip`
 2. Install [Caddy](https://caddyserver.com/docs/install) HTTP server

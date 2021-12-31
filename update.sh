@@ -41,6 +41,6 @@ add_zips ubuntu focal focal-amd64 amd64
 add_zips debian buster buster-armv7 armhf
 add_zips debian bullseye bullseye-amd64 amd64
 add_zips debian bullseye bullseye-arm64 arm64
-add_zips raspberrypi buster buster-armv6 armhf
+add_zips raspberrypi bullseye bullseye-armv6 armhf
 
 rm -rf $ROOTDIR/dl
