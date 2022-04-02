@@ -1,9 +1,9 @@
 #!/bin/bash
-set -eo pipefail
+set -euo pipefail
 PROJ=$1
 TARGET=$2
 
-BASEIMG=$(jq -r --arg target "$TARGET" '.target[$target].base' matrix.json)
+BASEIMG=$(jq -r --arg target "$TARGET" '.target[$target]' matrix.json)
 REPO=$(jq -r --arg proj "$PROJ" '.proj[$proj].repo' matrix.json)
 GROUP=$(jq -r --arg proj "$PROJ" '.proj[$proj].group' matrix.json)
 

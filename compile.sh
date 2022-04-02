@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+set -euo pipefail
 PROJ=$1
 REPO=$2
 GROUP=$3
@@ -25,6 +25,8 @@ else
 fi
 PKGVER="${SRCVER}-nightly"
 
+DEPVER_PKG=
+DEPVER_LABEL=
 if [[ $GROUP -eq 2 ]]; then
   DEPVER_PKG=libpsync
   DEPVER_LABEL=psync

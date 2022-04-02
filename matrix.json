@@ -28,6 +28,10 @@
       "repo": "https://github.com/named-data/repo-ng.git",
       "group": 1
     },
+    "ndncert": {
+      "repo": "https://github.com/named-data/ndncert.git",
+      "group": 1
+    },
     "ndn-traffic-generator": {
       "repo": "https://github.com/named-data/ndn-traffic-generator.git",
       "group": 1
@@ -42,29 +46,11 @@
     }
   },
   "target": {
-    "bionic-amd64": {
-      "skip": false,
-      "base": "ubuntu:18.04"
-    },
-    "focal-amd64": {
-      "skip": false,
-      "base": "ubuntu:20.04"
-    },
-    "buster-armv7": {
-      "skip": false,
-      "base": "balenalib/generic-armv7ahf:buster-build"
-    },
-    "bullseye-amd64": {
-      "skip": false,
-      "base": "debian:bullseye"
-    },
-    "bullseye-arm64": {
-      "skip": false,
-      "base": "balenalib/generic-aarch64:bullseye-build"
-    },
-    "bullseye-armv6": {
-      "skip": false,
-      "base": "balenalib/raspberry-pi:bullseye-build"
-    }
+    "bionic-amd64": "ubuntu:18.04",
+    "focal-amd64": "ubuntu:20.04",
+    "buster-armv7": "balenalib/generic-armv7ahf:buster-build",
+    "bullseye-amd64": "debian:bullseye",
+    "bullseye-arm64": "balenalib/generic-aarch64:bullseye-build",
+    "bullseye-armv6": "balenalib/raspberry-pi:bullseye-build"
   }
 }
