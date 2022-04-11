@@ -47,7 +47,11 @@ PKGVER="${PKGVER}~${DISTRO}"
 if ! [[ -d debian ]] && [[ -d ../ppa-packaging/$PROJ ]]; then
   cp -R ../ppa-packaging/$PROJ/debian .
 fi
-sed -i '/override_dh_auto_build/,/^$/ s|./waf build$|./waf build -j'$(nproc)'|' debian/rules
+# as of 2022-04-11, some projects are switching to C++17, but ppa-packaging is not yet updated
+sed -i \
+  -e '/override_dh_auto_build/,/^$/ s|./waf build$|./waf build -j'$(nproc)'|' \
+  -e '/CXXFLAGS/ s|-std=c++14|-std=c++17|' \
+  debian/rules
 
 rm -rf debian/source
 
@@ -65,7 +69,7 @@ sed -i -E \
   -e 's/python2.7-minimal/python3-minimal/' \
   debian/control
 
-if [[ $PROJ == 'nlsr' ]]; then
+if [[ $PROJ == nlsr ]]; then
   # as of 2021-04-07, NLSR does not need ChronoSync, but ppa-packaging is not yet updated
   sed -i -e '/libchronosync-dev/ d' debian/control
 fi
@@ -114,6 +118,6 @@ debuild -us -uc
 
 cd /source
 find -not -name '*.deb' -delete
-if [[ $PROJ == 'ndn-cxx' ]]; then
+if [[ $PROJ == ndn-cxx ]]; then
   rm -f ndn-cxx_*.deb ndn-cxx-dbg_*.deb ndn-cxx-dev_*.deb
 fi
