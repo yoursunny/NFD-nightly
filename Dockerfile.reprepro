@@ -1,0 +1,4 @@
+FROM ubuntu:jammy
+RUN apt-get -y -qq update && \
+    apt-get -y -qq install --no-install-recommends ca-certificates curl jq reprepro wget unzip && \
+    rm -rf /var/lib/apt/lists/*
