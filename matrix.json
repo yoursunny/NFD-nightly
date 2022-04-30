@@ -46,8 +46,8 @@
     }
   },
   "target": {
-    "bionic-amd64": "ubuntu:18.04",
     "focal-amd64": "ubuntu:20.04",
+    "jammy-amd64": "ubuntu:22.04",
     "buster-armv7": "balenalib/generic-armv7ahf:buster-build",
     "bullseye-amd64": "debian:bullseye",
     "bullseye-arm64": "balenalib/generic-aarch64:bullseye-build",

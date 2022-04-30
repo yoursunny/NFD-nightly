@@ -61,19 +61,6 @@ rm -rf debian/source
   echo " -- Junxiao Shi <deb@mail1.yoursunny.com>  $(date -R)"
 ) > debian/changelog
 
-# dh-systemd is part of debhelper, and has been removed in bullseye
-# as of 2021-08-18, all packages use Python 3, but ppa-packaging is not yet updated
-sed -i -E \
-  -e '/dh-systemd/ d' \
-  -e 's/python \([^)]+\)/python3 (>= 3.6.0)/' \
-  -e 's/python2.7-minimal/python3-minimal/' \
-  debian/control
-
-if [[ $PROJ == nlsr ]]; then
-  # as of 2021-04-07, NLSR does not need ChronoSync, but ppa-packaging is not yet updated
-  sed -i -e '/libchronosync-dev/ d' debian/control
-fi
-
 # delete unnecessary sudo-to-root
 # replace sudo-to-user with gosu, which is safer in Docker
 find debian -name '*.postinst' | xargs --no-run-if-empty sed -i -E \
@@ -118,6 +105,3 @@ debuild -us -uc
 
 cd /source
 find -not -name '*.deb' -delete
-if [[ $PROJ == ndn-cxx ]]; then
-  rm -f ndn-cxx_*.deb ndn-cxx-dbg_*.deb ndn-cxx-dev_*.deb
-fi
