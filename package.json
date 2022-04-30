@@ -3,7 +3,8 @@
   "scripts": {
     "lint": "xo --fix"
   },
+  "packageManager": "pnpm@6.32.11",
   "devDependencies": {
-    "@yoursunny/xo-config": "^0.45.1"
+    "@yoursunny/xo-config": "^0.48.1"
   }
 }

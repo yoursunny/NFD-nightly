@@ -15,10 +15,7 @@ async function update() {
   if (!$input) {
     return;
   }
-  const $label = $input.parentElement;
-  const repo = $label.getAttribute("data-repo");
-  const distro = $label.getAttribute("data-distro");
-  const arch = $label.getAttribute("data-arch");
+  const { repo, distro, arch } = $input.parentElement.dataset;
   const source = `deb [arch=${arch} trusted=yes] ${BASE}/${repo} ${distro} main`;
   $setup.textContent = `echo "${source}" \\\n  | sudo tee /etc/apt/sources.list.d/nfd-nightly.list`;
 
