@@ -75,25 +75,52 @@ for F in $(grep -l 'gosu ' debian/*.postinst || true); do
   ' debian/control
 done
 
-BOOST_VER=$(apt-cache show libboost-dev | awk '$1=="Depends:" { gsub("libboost|-dev","",$2); print $2 }')
-BOOST_PKGS=(
-  atomic
-  chrono
-  date-time
-  filesystem
-  iostreams
-  log
-  program-options
-  regex
-  stacktrace
-  system
-  thread
-)
-BOOST_PKGS_REPL=$(echo "${BOOST_PKGS[@]}" | sed -E -e "s/\S+/libboost-\\0${BOOST_VER}-dev\\\\1/g" -e 's/\s+/,\0/g')
-sed -i -E "s|libboost-all-dev( \\([^)]*\\))?|${BOOST_PKGS_REPL}|" debian/control
+# replace Build-Depends libboost-all-dev with fewer packages
+if [[ -f wscript ]] && [[ -f .waf-tools/boost.py ]]; then
+  BOOST_PKGS=$((
+    echo 'stacktrace_backend = ""'
+    echo 'boost_libs = []'
+    awk '$0~/boost_libs/ && $0!~/conf\.check_boost/ { sub(/^[ \t]*/, "", $0); print }' wscript
+    echo 'if type(boost_libs)==str:'
+    echo '  boost_libs = boost_libs.split(" ")'
+    echo 'boost_libs = set(boost_libs)'
+    echo 'boost_libs.discard("unit_test_framework")'
+    echo 'if "stacktrace_" in boost_libs:'
+    echo '  boost_libs.discard("stacktrace_")'
+    echo '  boost_libs.add("stacktrace")'
+    echo 'print(",".join([("libboost-%s-dev" % x.replace("_","-")) for x in boost_libs]))'
+  ) | python3)
+else
+  BOOST_PKGS=$(echo 'atomic chrono date-time filesystem iostreams log program-options regex stacktrace system thread' |
+               sed -E -e "s/\S+/libboost-\\0-dev/g" -e 's/\s+/,/g')
+fi
+sed -i -E "s|libboost-all-dev( \\([^)]*\\))?|${BOOST_PKGS}|" debian/control
 
+# as of 2022-05-01, libndn-cxx-dev is not listing some Boost libraries but they are still referenced in libndn-cxx.pc
+if [[ $PROJ == ndn-cxx ]]; then
+  awk -i inplace -v BoostPkgs=${BOOST_PKGS} '
+    $1=="Package:" { in_dev = $2=="libndn-cxx-dev" }
+    in_dev && $1=="Depends:" { in_depends = 1 }
+    in_depends {
+      if (match($0, "libboost-[^-]+-dev")) {
+        BoostDepends[substr($0, RSTART, RLENGTH)] = 1
+      }
+      if (substr($0, 1, 1) == " " && substr($0, length($0)) != ",") {
+        nBoostPkgs = split(BoostPkgs, BoostPkgsA, ",")
+        for (i=1; i<=nBoostPkgs; i++) {
+          if (!BoostDepends[BoostPkgsA[i]]) {
+            print " " BoostPkgsA[i] ","
+          }
+        }
+        in_depends = 0
+      }
+    }
+    { print }
+  ' debian/control
+fi
+
+# ndn-cxx and PSync do not have a stable ABI, so that dependents should depend on exact version
 if [[ -n $DEPVER_PKG ]]; then
-  # ndn-cxx and PSync do not have a stable ABI, so that dependents should depend on exact version
   sed -i -E \
     -e "/^Depends:.*shlibs:Depends/ s|, ${DEPVER_PKG}\b||" \
     -e "/^Depends:/ s|(\\\$\{shlibs:Depends\})|${DEPVER_PKG} (= ${DEP_PKGVER}), \1|" \
