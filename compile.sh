@@ -36,7 +36,7 @@ elif [[ $GROUP -eq 1 ]]; then
 fi
 if [[ -n $DEPVER_PKG ]]; then
   # ndn-cxx and PSync do not have a stable ABI, so the dependent version should contain their versions
-  DEP_PKGVER=$(dpkg -s ${DEPVER_PKG} | awk '$1=="Version:" { print $2 }')
+  DEP_PKGVER=$(dpkg -s ${DEPVER_PKG} | gawk '$1=="Version:" { print $2 }')
   DEP_SRCVER=${DEP_PKGVER/~${DISTRO}/}
   DEP_SRCVER=${DEP_SRCVER/-nightly/}
   DEP_SRCVER=${DEP_SRCVER//-/.}
@@ -47,10 +47,9 @@ PKGVER="${PKGVER}~${DISTRO}"
 if ! [[ -d debian ]] && [[ -d ../ppa-packaging/$PROJ ]]; then
   cp -R ../ppa-packaging/$PROJ/debian .
 fi
-# as of 2022-04-11, some projects are switching to C++17, but ppa-packaging is not yet updated
+# enable parallel builds
 sed -i \
   -e '/override_dh_auto_build/,/^$/ s|./waf build$|./waf build -j'$(nproc)'|' \
-  -e '/CXXFLAGS/ s|-std=c++14|-std=c++17|' \
   debian/rules
 
 rm -rf debian/source
@@ -67,20 +66,24 @@ find debian -name '*.postinst' | xargs --no-run-if-empty sed -i -E \
   -e 's/^(\s*)sudo -u (\S+) -g (\S+)/\1gosu \2:\3 env/' \
   -e 's/^(\s*)sudo /\1/'
 for F in $(grep -l 'gosu ' debian/*.postinst || true); do
-  awk -i inplace -vPKG=$(basename -s .postinst $F) '
+  gawk -i inplace -vPKG=$(basename -s .postinst $F) '
     $1=="Package:" && $2==PKG { matching = 1 }
     matching==1 && $1=="Depends:" { $1 = $1 " gosu," }
     NF==0 { matching = 0 }
     { print }
   ' debian/control
 done
+gawk -i inplace '
+  $1=="Depends:" { sub(/, sudo(\s[^,]+)?/, "", $0) }
+  { print }
+' debian/control
 
 # replace Build-Depends libboost-all-dev with fewer packages
 if [[ -f wscript ]] && [[ -f .waf-tools/boost.py ]]; then
   BOOST_PKGS=$((
     echo 'stacktrace_backend = ""'
     echo 'boost_libs = []'
-    awk '$0~/boost_libs/ && $0!~/conf\.check_boost/ { sub(/^[ \t]*/, "", $0); print }' wscript
+    gawk '$0~/boost_libs/ && $0!~/conf\.check_boost/ { sub(/^[ \t]*/, "", $0); print }' wscript
     echo 'if type(boost_libs)==str:'
     echo '  boost_libs = boost_libs.split(" ")'
     echo 'boost_libs = set(boost_libs)'
@@ -98,7 +101,7 @@ sed -i -E "s|libboost-all-dev( \\([^)]*\\))?|${BOOST_PKGS}|" debian/control
 
 # as of 2022-05-01, libndn-cxx-dev is not listing some Boost libraries but they are still referenced in libndn-cxx.pc
 if [[ $PROJ == ndn-cxx ]]; then
-  awk -i inplace -v BoostPkgs=${BOOST_PKGS} '
+  gawk -i inplace -v BoostPkgs=${BOOST_PKGS} '
     $1=="Package:" { in_dev = $2=="libndn-cxx-dev" }
     in_dev && $1=="Depends:" { in_depends = 1 }
     in_depends {
