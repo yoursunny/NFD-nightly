@@ -47,13 +47,19 @@ PKGVER="${PKGVER}~${DISTRO}"
 if ! [[ -d debian ]] && [[ -d ../ppa-packaging/$PROJ ]]; then
   cp -R ../ppa-packaging/$PROJ/debian .
 fi
+
 # enable parallel builds
+# create automatic dbgsym packages
 sed -i \
   -e '/override_dh_auto_build/,/^$/ s|./waf build$|./waf build -j'$(nproc)'|' \
+  -e '/dh_strip/ d' \
   debian/rules
+sed -i '/^Package: .*-dbg/,/^$/ d' debian/control
 
+# use local source
 rm -rf debian/source
 
+# declare version
 (
   echo "${PROJ} (${PKGVER}) ${DISTRO}; urgency=medium"
   echo "  * Automated build of version ${SRCVER}"
