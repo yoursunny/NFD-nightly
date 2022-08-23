@@ -128,6 +128,13 @@ if [[ $PROJ == ndn-cxx ]]; then
   ' debian/control
 fi
 
+# as of 2022-08-23, some projects need Sphinx 4.x but system package often has older version
+if grep -q python3-sphinx debian/control && [[ $(apt-cache show python3-sphinx | awk '$1=="Version:" { split($2,a,"."); print a[1] }') -lt 4 ]]; then
+  sed -i '/python3-sphinx/ d' debian/control
+  pip3 install --upgrade sphinx
+  ln -s /usr/local/bin/sphinx-build /usr/bin/sphinx-build
+fi
+
 # ndn-cxx and PSync do not have a stable ABI, so that dependents should depend on exact version
 if [[ -n $DEPVER_PKG ]]; then
   sed -i -E \

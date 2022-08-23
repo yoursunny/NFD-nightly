@@ -14,7 +14,7 @@ GROUP=$(jq -r --arg proj "$PROJ" '.proj[$proj].group' matrix.json)
   fi
   echo 'ENV DEBIAN_FRONTEND=noninteractive'
   echo 'RUN apt-get update \'
-  echo ' && apt-get install -qq --no-install-recommends ca-certificates devscripts equivs gawk git lsb-release python3'
+  echo ' && apt-get install -qq --no-install-recommends ca-certificates devscripts equivs gawk git lsb-release python3-pip python3-setuptools'
   if [[ -d deps ]]; then
     echo 'COPY deps /deps'
   fi
