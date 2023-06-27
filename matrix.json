@@ -51,6 +51,7 @@
     "buster-armv7": "balenalib/generic-armv7ahf:buster-build",
     "bullseye-amd64": "debian:bullseye",
     "bullseye-arm64": "balenalib/generic-aarch64:bullseye-build",
-    "bullseye-armv6": "balenalib/raspberry-pi:bullseye-build"
+    "bullseye-armv6": "balenalib/raspberry-pi:bullseye-build",
+    "bookworm-amd64": "debian:bookworm"
   }
 }
