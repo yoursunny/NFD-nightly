@@ -24,8 +24,14 @@ https://nfd-nightly-apt.ndn.today {
       wrap json
       fields {
         request>tls delete
-        common_log delete
+        request>remote_ip ip_mask {
+          ipv4 24
+          ipv6 48
+        }
+        request>remote_port delete
+        user_id delete
         resp_headers delete
+        common_log delete
       }
     }
   }

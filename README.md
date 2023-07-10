@@ -12,9 +12,9 @@ To install from the hosted APT repository, please see https://nfd-nightly.ndn.to
 2. Create `/home/web` directory and make it accessible to Caddy:
     ```bash
     sudo mkdir /home/web
-    sudo chown -R $(whoami):www-data /home/web
+    sudo chown -R $(id -un):www-data /home/web
     sudo chmod g+ws /home/web
-    sudo usermod -a -G www-data $(whoami)
+    sudo adduser $(id -un) www-data
     ```
 3. Clone this branch to `/home/web/NFD-nightly-apt` directory:
     ```bash
