@@ -5,3 +5,7 @@ Components: main
 Codename: bullseye
 Architectures: amd64 arm64
 Components: main
+
+Codename: bookworm
+Architectures: amd64
+Components: main
