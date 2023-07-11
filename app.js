@@ -69,4 +69,4 @@ async function update() {
 for (const $input of document.querySelectorAll("input[name=os]")) {
   $input.addEventListener("change", update);
 }
-update();
+await update();
