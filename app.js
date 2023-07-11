@@ -39,27 +39,25 @@ async function update() {
   $list.querySelector("tbody")?.remove();
   const $tbody = document.createElement("tbody");
   for (const lines of packages.split("\n\n")) {
+    /** @type {Record<string, string>} */
     const kv = {};
     for (const line of lines.split("\n")) {
       const [k, v] = line.split(":");
       kv[k.toLowerCase()] = (v ?? "").trim();
     }
+    const { package: pkg, description, source, version = "?", "installed-size": installed = "?", depends = "" } = kv;
+    if (!pkg || !description) {
+      continue;
+    }
 
     const $tr = document.createElement("tr");
-    let missing = false;
-    for (const k of ["package", "description"]) {
-      const v = kv[k];
-      if (!v) {
-        missing = true;
-        break;
-      }
+    for (const v of [pkg, description]) {
       const $td = document.createElement("td");
       $td.textContent = v;
       $tr.append($td);
     }
-    if (missing) {
-      continue;
-    }
+    $tr.title = `Source: ${source ?? pkg}\nVersion: ${version}\nInstalled-Size: ${installed}K\n` +
+                `Depends: ${depends.replace(/ \([^)]+\)/g, "")}`;
     $tbody.append($tr);
   }
   $list.append($tbody);
