@@ -64,7 +64,7 @@ rm -rf debian/source
   echo "${PROJ} (${PKGVER}) ${DISTRO}; urgency=medium"
   echo "  * Automated build of version ${SRCVER}"
   echo " -- Junxiao Shi <deb@mail1.yoursunny.com>  $(date -R)"
-) > debian/changelog
+) >debian/changelog
 
 # delete unnecessary sudo-to-root
 # replace sudo-to-user with gosu, which is safer in Docker
@@ -86,7 +86,7 @@ gawk -i inplace '
 
 # replace Build-Depends libboost-all-dev with fewer packages
 if [[ -f wscript ]] && [[ -f .waf-tools/boost.py ]]; then
-  BOOST_PKGS=$((
+  BOOST_PKGS=$( (
     echo 'stacktrace_backend = ""'
     echo 'boost_libs = []'
     gawk '$0~/boost_libs/ && $0!~/conf\.check_boost/ { sub(/^[ \t]*/, "", $0); print }' wscript
@@ -101,7 +101,7 @@ if [[ -f wscript ]] && [[ -f .waf-tools/boost.py ]]; then
   ) | python3)
 else
   BOOST_PKGS=$(echo 'atomic chrono date-time filesystem iostreams log program-options regex stacktrace system thread' |
-               sed -E -e "s/\S+/libboost-\\0-dev/g" -e 's/\s+/,/g')
+    sed -E -e "s/\S+/libboost-\\0-dev/g" -e 's/\s+/,/g')
 fi
 sed -i -E "s|libboost-all-dev( \\([^)]*\\))?|${BOOST_PKGS}|" debian/control
 

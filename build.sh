@@ -20,7 +20,7 @@ GROUP=$(jq -r --arg proj "$PROJ" '.proj[$proj].group' matrix.json)
   fi
   echo 'COPY compile.sh /'
   echo 'RUN /bin/bash /compile.sh '$PROJ $REPO $GROUP
-) > Dockerfile
+) >Dockerfile
 
 docker build -t nfd-nightly-build .
 
