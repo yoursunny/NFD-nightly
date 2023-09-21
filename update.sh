@@ -5,7 +5,7 @@ ROOTDIR=$(pwd)
 source .env
 
 curl_gh() {
-  curl -sfS -H "Authorization: token ${GH_PAT}" "$@"
+  curl -fsS -H "Authorization: token ${GH_PAT}" "$@"
 }
 
 ARTIFACTS_URL=$(curl_gh https://api.github.com/repos/${REPO}/actions/runs | \
@@ -36,12 +36,12 @@ add_zips() {
   [[ -d $TMPDIR ]] && rm -rf $TMPDIR
 }
 
-add_zips ubuntu focal focal-amd64 amd64
-add_zips ubuntu jammy jammy-amd64 amd64
-add_zips debian buster buster-armv7 armhf
+add_zips debian bookworm bookworm-amd64 amd64
 add_zips debian bullseye bullseye-amd64 amd64
 add_zips debian bullseye bullseye-arm64 arm64
-add_zips debian bookworm bookworm-amd64 amd64
+add_zips debian bullseye bullseye-armv7 armhf
 add_zips raspberrypi bullseye bullseye-armv6 armhf
+add_zips ubuntu focal focal-amd64 amd64
+add_zips ubuntu jammy jammy-amd64 amd64
 
 rm -rf $ROOTDIR/dl

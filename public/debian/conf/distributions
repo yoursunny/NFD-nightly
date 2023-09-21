@@ -1,9 +1,5 @@
-Codename: buster
-Architectures: armhf
-Components: main
-
 Codename: bullseye
-Architectures: amd64 arm64
+Architectures: amd64 arm64 armhf
 Components: main
 
 Codename: bookworm
