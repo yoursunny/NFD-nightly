@@ -87,17 +87,25 @@ gawk -i inplace '
 # replace Build-Depends libboost-all-dev with fewer packages
 if [[ -f wscript ]] && [[ -f .waf-tools/boost.py ]]; then
   BOOST_PKGS=$( (
-    echo 'stacktrace_backend = ""'
-    echo 'boost_libs = []'
-    gawk '$0~/boost_libs/ && $0!~/conf\.check_boost/ { sub(/^[ \t]*/, "", $0); print }' wscript
-    echo 'if type(boost_libs)==str:'
-    echo '  boost_libs = boost_libs.split(" ")'
-    echo 'boost_libs = set(boost_libs)'
-    echo 'boost_libs.discard("unit_test_framework")'
-    echo 'if "stacktrace_" in boost_libs:'
-    echo '  boost_libs.discard("stacktrace_")'
-    echo '  boost_libs.add("stacktrace")'
-    echo 'print(",".join([("libboost-%s-dev" % x.replace("_","-")) for x in boost_libs]))'
+    tee <<EOT
+stacktrace_backend, candidate = '', ''
+LIBS = set()
+class Conf:
+  def check_boost(self, **kwds):
+    lib = kwds.get('lib', [])
+    if type(lib) == str:
+      lib = lib.split(' ')
+    LIBS.update(lib)
+conf = Conf()
+EOT
+    gawk '$0~/boost_libs/ || $0~/conf\.check_boost/ { sub(/^[ \t]*/, "", $0); print }' wscript
+    tee <<EOT
+LIBS.discard('unit_test_framework')
+if 'stacktrace_' in LIBS:
+  LIBS.discard('stacktrace_')
+  LIBS.add('stacktrace')
+print(",".join([("libboost-%s-dev" % x.replace("_","-")) for x in LIBS]))
+EOT
   ) | python3)
 else
   BOOST_PKGS=$(echo 'atomic chrono date-time filesystem iostreams log program-options regex stacktrace system thread' |
