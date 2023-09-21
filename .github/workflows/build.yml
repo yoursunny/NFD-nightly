@@ -6,7 +6,7 @@ on:
   schedule:
     - cron: '0 0 * * 0'
   workflow_dispatch:
-
+permissions: {}
 jobs:
   prepare:
     runs-on: ubuntu-20.04
@@ -16,7 +16,7 @@ jobs:
       proj2: ${{ steps.set.outputs.proj2 }}
       target: ${{ steps.set.outputs.target }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: set
         name: set variables
         run: |
@@ -36,7 +36,7 @@ jobs:
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: bash build.sh ${{ matrix.proj }} ${{ matrix.target }}
       - uses: actions/upload-artifact@v3
         with:
@@ -54,7 +54,7 @@ jobs:
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: ndn-cxx ${{ matrix.target }}
@@ -76,7 +76,7 @@ jobs:
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: ndn-cxx ${{ matrix.target }}
