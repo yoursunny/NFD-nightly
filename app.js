@@ -57,7 +57,7 @@ async function update() {
       $tr.append($td);
     }
     $tr.title = `Source: ${source ?? pkg}\nVersion: ${version}\nInstalled-Size: ${installed}K\n` +
-                `Depends: ${depends.replace(/ \([^)]+\)/g, "")}`;
+                `Depends: ${depends.replaceAll(/ \([^)]+\)/g, "")}`;
     $tbody.append($tr);
   }
   $list.append($tbody);
