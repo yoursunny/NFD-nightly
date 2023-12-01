@@ -26,6 +26,6 @@ To install from the hosted APT repository, please see https://nfd-nightly.ndn.to
 ## Setup Update Script
 
 1. `./docker-build.sh`
-2. Copy `sample.env` to `.env`, and enter a GitHub Personal Access Token in `.env`
+2. Copy `sample.env` to `.env`, and enter a GitHub token (NDNts-nightly repository "Actions: Read") in `.env`
 3. Run `/home/web/NFD-nightly-apt/docker-update.sh` script to download packages from GitHub Actions artifacts
 4. Setup crontab to run this script weekly, 24 hours after the GitHub Actions trigger
