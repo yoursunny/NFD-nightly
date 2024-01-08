@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash build.sh ${{ matrix.proj }} ${{ matrix.target }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
@@ -55,12 +55,12 @@ jobs:
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: ndn-cxx ${{ matrix.target }}
           path: deps
       - run: bash build.sh ${{ matrix.proj }} ${{ matrix.target }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
@@ -77,16 +77,16 @@ jobs:
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: ndn-cxx ${{ matrix.target }}
           path: deps
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: libpsync ${{ matrix.target }}
           path: deps
       - run: bash build.sh ${{ matrix.proj }} ${{ matrix.target }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
