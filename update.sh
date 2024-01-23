@@ -3,23 +3,23 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 ROOTDIR=$(pwd)
 source .env
+rm -rf $ROOTDIR/dl
+mkdir -p $ROOTDIR/dl
+cd $ROOTDIR/dl
 
 curl_gh() {
   curl -fsS -H "Authorization: token ${GH_PAT}" "$@"
 }
 
-ARTIFACTS_URL=$(curl_gh https://api.github.com/repos/${REPO}/actions/runs | \
+ARTIFACTS_URL=$(curl_gh https://api.github.com/repos/${REPO}/actions/runs |
   jq -r --arg branch $BRANCH '.workflow_runs | map(select(.conclusion=="success" and .head_branch==$branch))[0] | .artifacts_url')
-DOWNLOAD_URLS=$(curl_gh "${ARTIFACTS_URL}?per_page=100" | jq -r '.artifacts[] | .archive_download_url')
+curl_gh "${ARTIFACTS_URL}?per_page=100" | jq -r '.artifacts[] | [.name,.archive_download_url] | @tsv' >artifacts.tsv
 
-rm -rf $ROOTDIR/dl
-mkdir -p $ROOTDIR/dl
-cd $ROOTDIR/dl
-for DOWNLOAD_URL in $DOWNLOAD_URLS; do
-  ASSET_URL=$(curl_gh -I $DOWNLOAD_URL | \
-    awk 'tolower($1)=="location:" { print $2; found=1 } END { exit 1-found }')
-  wget -q --content-disposition $ASSET_URL
-done
+while IFS="" read ARTIFACT; do
+  ASSET_FILENAME="$(echo "$ARTIFACT" | cut -f1).zip"
+  ASSET_URL="$(echo "$ARTIFACT" | cut -f2)"
+  curl_gh -L -o "$ASSET_FILENAME" "$ASSET_URL"
+done <artifacts.tsv
 
 add_zips() {
   TMPDIR=/tmp/nfd-nightly-apt-$1-$2
