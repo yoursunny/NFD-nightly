@@ -46,12 +46,13 @@
     }
   },
   "target": {
-    "bookworm-amd64": "debian:bookworm",
     "bullseye-amd64": "debian:bullseye",
     "bullseye-arm64": "balenalib/generic-aarch64:bullseye-build",
-    "bullseye-armv6": "balenalib/raspberry-pi:bullseye-build",
     "bullseye-armv7": "balenalib/generic-armv7ahf:bullseye-build",
+    "bookworm-amd64": "debian:bookworm",
+    "bookworm-arm64": "balenalib/generic-aarch64:bookworm-build",
     "focal-amd64": "ubuntu:20.04",
-    "jammy-amd64": "ubuntu:22.04"
+    "jammy-amd64": "ubuntu:22.04",
+    "noble-amd64": "ubuntu:24.04"
   }
 }

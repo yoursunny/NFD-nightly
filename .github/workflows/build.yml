@@ -9,7 +9,7 @@ on:
 permissions: {}
 jobs:
   prepare:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       proj0: ${{ steps.set.outputs.proj0 }}
       proj1: ${{ steps.set.outputs.proj1 }}
@@ -25,7 +25,7 @@ jobs:
           echo proj2=$(jq -c '.proj | with_entries(select(.value.group==2)) | keys' matrix.json) >> $GITHUB_OUTPUT
           echo target=$(jq -c '.target | keys' matrix.json) >> $GITHUB_OUTPUT
   group0:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [prepare]
     strategy:
       matrix:
@@ -43,7 +43,7 @@ jobs:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
   group1:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [prepare, group0]
     strategy:
       matrix:
@@ -65,7 +65,7 @@ jobs:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
   group2:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [prepare, group1]
     strategy:
       matrix:
@@ -91,7 +91,7 @@ jobs:
           name: ${{ matrix.proj }} ${{ matrix.target }}
           path: output
   publish:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [group2]
     steps:
       - run: true
