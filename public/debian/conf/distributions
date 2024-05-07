@@ -3,5 +3,5 @@ Architectures: amd64 arm64 armhf
 Components: main
 
 Codename: bookworm
-Architectures: amd64
+Architectures: amd64 arm64
 Components: main

@@ -5,3 +5,7 @@ Components: main
 Codename: jammy
 Architectures: amd64
 Components: main
+
+Codename: noble
+Architectures: amd64
+Components: main
