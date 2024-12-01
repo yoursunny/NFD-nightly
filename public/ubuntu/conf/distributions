@@ -1,7 +1,3 @@
-Codename: focal
-Architectures: amd64
-Components: main
-
 Codename: jammy
 Architectures: amd64
 Components: main
