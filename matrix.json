@@ -46,8 +46,6 @@
     }
   },
   "target": {
-    "bullseye-arm64": "balenalib/generic-aarch64:bullseye-build",
-    "bullseye-armv7": "balenalib/generic-armv7ahf:bullseye-build",
     "bookworm-amd64": "debian:bookworm",
     "bookworm-arm64": "balenalib/generic-aarch64:bookworm-build",
     "jammy-amd64": "ubuntu:22.04",
