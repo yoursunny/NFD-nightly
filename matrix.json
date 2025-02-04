@@ -24,10 +24,6 @@
       "repo": "https://github.com/named-data/NLSR.git",
       "group": 2
     },
-    "repo-ng": {
-      "repo": "https://github.com/named-data/repo-ng.git",
-      "group": 1
-    },
     "ndncert": {
       "repo": "https://github.com/named-data/ndncert.git",
       "group": 1
