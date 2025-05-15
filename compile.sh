@@ -136,6 +136,19 @@ if [[ $PROJ == ndn-cxx ]]; then
   ' debian/control
 fi
 
+# as of 2025-04-20, ndn-tools has several binaries and manpages renamed
+if [[ $PROJ == ndn-tools ]]; then
+  sed -i \
+    -e '1 i\usr/bin/ndndissect' \
+    -e 's|ndn-dissect\.1|ndndissect.1|' \
+    debian/ndn-dissect.install
+  sed -i \
+    -e '1 i\usr/bin/ndnget' \
+    -e '1 i\usr/bin/ndnserve' \
+    -e '1 i\usr/share/man/man1/ndnserve.1' \
+    debian/ndnchunks.install
+fi
+
 # neither ndn-cxx nor PSync has a stable ABI, so that dependents should depend on exact version
 if [[ -n $DEPVER_PKG ]]; then
   sed -i -E \
