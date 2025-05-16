@@ -36,6 +36,8 @@ jobs:
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
+      - uses: docker/setup-qemu-action@v3
+        if: ${{ ! endsWith(matrix.target, '-amd64') }}
       - uses: actions/checkout@v4
       - run: bash build.sh ${{ matrix.proj }} ${{ matrix.target }}
       - uses: actions/upload-artifact@v4
@@ -54,6 +56,8 @@ jobs:
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
+      - uses: docker/setup-qemu-action@v3
+        if: ${{ ! endsWith(matrix.target, '-amd64') }}
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
@@ -76,6 +80,8 @@ jobs:
       max-parallel: 10
     name: ${{ matrix.proj }} ${{ matrix.target }}
     steps:
+      - uses: docker/setup-qemu-action@v3
+        if: ${{ ! endsWith(matrix.target, '-amd64') }}
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:

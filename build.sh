@@ -3,9 +3,10 @@ set -euo pipefail
 PROJ=$1
 TARGET=$2
 
-BASEIMG=$(jq -r --arg target "$TARGET" '.target[$target]' matrix.json)
 REPO=$(jq -r --arg proj "$PROJ" '.proj[$proj].repo' matrix.json)
 GROUP=$(jq -r --arg proj "$PROJ" '.proj[$proj].group' matrix.json)
+BASEIMG=$(jq -r --arg target "$TARGET" '.target[$target].baseimg' matrix.json)
+PLATFORM=$(jq -r --arg target "$TARGET" '.target[$target].platform' matrix.json)
 
 (
   echo 'FROM '$BASEIMG
@@ -22,7 +23,7 @@ GROUP=$(jq -r --arg proj "$PROJ" '.proj[$proj].group' matrix.json)
   echo 'RUN /bin/bash /compile.sh '$PROJ $REPO $GROUP
 ) >Dockerfile
 
-docker build -t nfd-nightly-build .
+docker build -t nfd-nightly-build $([[ $PLATFORM == "null" ]] && echo "" || echo "--platform" $PLATFORM) .
 
 CTID=$(docker container create nfd-nightly-build)
 docker cp $CTID:/source ./output
