@@ -36,9 +36,9 @@ add_zips() {
   [[ -d $TMPDIR ]] && rm -rf $TMPDIR
 }
 
-add_zips debian bookworm bookworm-amd64 amd64
-add_zips debian bookworm bookworm-arm64 arm64
-add_zips ubuntu jammy jammy-amd64 amd64
+add_zips debian trixie trixie-amd64 amd64
+add_zips debian trixie trixie-arm64 arm64
 add_zips ubuntu noble noble-amd64 amd64
+add_zips ubuntu resolute resolute-amd64 amd64
 
 rm -rf $ROOTDIR/dl
