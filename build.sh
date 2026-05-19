@@ -26,5 +26,5 @@ PLATFORM=$(jq -r --arg target "$TARGET" '.target[$target].platform' matrix.json)
 docker build -t nfd-nightly-build $([[ $PLATFORM == "null" ]] && echo "" || echo "--platform" $PLATFORM) .
 
 CTID=$(docker container create nfd-nightly-build)
-docker cp $CTID:/source ./output
+docker cp $CTID:/source/. ./output
 docker container stop $CTID

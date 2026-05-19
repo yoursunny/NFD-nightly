@@ -42,18 +42,18 @@
     }
   },
   "target": {
-    "bookworm-amd64": {
-      "baseimg": "debian:bookworm"
+    "trixie-amd64": {
+      "baseimg": "debian:trixie"
     },
-    "bookworm-arm64": {
+    "trixie-arm64": {
       "platform": "linux/arm64",
-      "baseimg": "debian:bookworm"
-    },
-    "jammy-amd64": {
-      "baseimg": "ubuntu:22.04"
+      "baseimg": "debian:trixie"
     },
     "noble-amd64": {
       "baseimg": "ubuntu:24.04"
+    },
+    "resolute-amd64": {
+      "baseimg": "ubuntu:26.04"
     }
   }
 }
