@@ -24,17 +24,17 @@ Automated builds of NDN Forwarding Daemon (NFD) and related software.
 <form class="pure-form">
   <fieldset>
     <legend>Operating System and CPU Architecture</legend>
-    <label class="pure-radio" data-repo="debian" data-distro="bookworm" data-arch="amd64">
-      <input name="os" type="radio" checked> Debian 12 (Bookworm), x86_64 (laptops and servers, recommended for Docker)
+    <label class="pure-radio" data-repo="debian" data-distro="trixie" data-arch="amd64">
+      <input name="os" type="radio" checked> Debian 13 (Trixie), x86_64 (laptops and servers, recommended for Docker)
     </label>
-    <label class="pure-radio" data-repo="debian" data-distro="bookworm" data-arch="arm64">
-      <input name="os" type="radio"> Debian 12 (Bookworm), ARMv8 (cloud servers, single board computers)
-    </label>
-    <label class="pure-radio" data-repo="ubuntu" data-distro="jammy" data-arch="amd64">
-      <input name="os" type="radio"> Ubuntu 22.04 (Jammy), x86_64 (laptops and servers)
+    <label class="pure-radio" data-repo="debian" data-distro="trixie" data-arch="arm64">
+      <input name="os" type="radio"> Debian 13 (Trixie), ARMv8 (cloud servers, single board computers)
     </label>
     <label class="pure-radio" data-repo="ubuntu" data-distro="noble" data-arch="amd64">
       <input name="os" type="radio"> Ubuntu 24.04 (Noble), x86_64 (laptops and servers)
+    </label>
+    <label class="pure-radio" data-repo="ubuntu" data-distro="resolute" data-arch="amd64">
+      <input name="os" type="radio"> Ubuntu 24.04 (Resolute), x86_64 (laptops and servers)
     </label>
   </fieldset>
   <fieldset>
@@ -57,7 +57,7 @@ Automated builds of NDN Forwarding Daemon (NFD) and related software.
 </section>
 
 <footer>
-<p>&copy; yoursunny.com, powered by <a href="https://github.com/yoursunny/NFD-nightly/actions" target="_blank" rel="noopener">GitHub Actions</a> and <a href="https://docs.balena.io/reference/base-images/base-images-ref/" target="_blank" rel="noopener">Balena Docker images</a></p>
+<p>&copy; yoursunny.com, powered by <a href="https://github.com/yoursunny/NFD-nightly/actions" target="_blank" rel="noopener">GitHub Actions</a></p>
 </footer>
 <script type="module" src="app.js"></script>
 
